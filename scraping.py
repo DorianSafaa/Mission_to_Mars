@@ -97,33 +97,27 @@ def mars_facts():
     return df.to_html(classes="table table-striped")
 
 def hemisphere_data(browser):
-    hemisphere_image_urls = []
-     # 1. Use browser to visit the URL 
-    
+    # 1. Use browser to visit the URL 
+    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
 
-    for i in range (4):
-        url = 'https://marshemispheres.com/'
-        browser.visit(url)
+    browser.visit(url)
+
+    # 2. Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+
+
+    # 3. Write code to retrieve the image urls and titles for each hemisphere.
+    for x in range(4):
+        title = browser.find_by_tag('h3').text
+
+        browser.find_by_css('.thumb').click()
+        img_url = browser.find_by_text('Sample')['href']
+        browser.back()
         
-        full_image_p1 = browser.find_by_tag('img')[i+3]
-        full_image_p1.click()
-        full_image_p2 = browser.find_by_text('Sample')[0]
-        full_image_p2.click()
-        
-        # Parse the resulting html with soup
-        html = browser.html
-        hemisphere_soup = soup(html, 'html.parser')
-        link = url+hemisphere_soup.find('li').a['href']
-        title = hemisphere_soup.find('h2', class_='title').text
-        
-        hemisphere = {
-            'img_url' : link,
-            'title': title 
-        }
-        
-        hemisphere_image_urls.append(hemisphere)
-        
-    return hemisphere_image_urls
+        img_info = {'img_url': img_url, 'title': title}
+        hemisphere_image_urls.append(img_info)
+            
+        return hemisphere_image_urls
 
 
 if __name__ == "__main__":
